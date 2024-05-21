@@ -12,9 +12,21 @@ const createProductIntoDB = async (productData: TProduct) => {
 };
 
 // get all products from DB
-const getAllProductsFromDB = async () => {
-  const result = await Product.find();
-  return result;
+const getAllProductsFromDB = async (query: string) => {
+  try {
+    const result = await Product.find({
+      $or: [
+        { name: { $regex: `^${query}` } },
+        { category: { $regex: `^${query}` } },
+        { description: { $regex: `^${query}` } },
+      ],
+    });
+    if (result.length === 0)
+      throw new Error(`No product found with search term: ${query}`);
+    return result;
+  } catch (err) {
+    throw new Error(`No product found with search term: ${query}`);
+  }
 };
 
 // get a specific product from DB
@@ -43,7 +55,6 @@ const updateSingleProductInDB = async (
       }
     );
     matchCount = result.matchedCount;
-    console.log(result.modifiedCount);
     if (result.modifiedCount === 1) return updateProduct;
     else throw new Error(`Nothing to update`);
   } catch (err) {

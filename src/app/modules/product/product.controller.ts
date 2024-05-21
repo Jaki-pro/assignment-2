@@ -25,17 +25,22 @@ const createProduct = async (req: Request, res: Response) => {
 
 // get all products
 const getAllProducts = async (req: Request, res: Response) => {
+  let query: string = "";
+  if (req?.query?.searchTerm) query = req.query.searchTerm as string;
+
   try {
-    const result = await ProductServices.getAllProductsFromDB();
+    const result = await ProductServices.getAllProductsFromDB(query);
     res.status(200).json({
       success: true,
-      message: "Products fetched successfully!",
+      message: query
+        ? `Products matching search term ${query} fetched successfully!`
+        : "Products fetched successfully!",
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
+    res.status(404).json({
       success: false,
-      message: "Product cannot be found!",
+      message: err.message || "No product found!",
       error: err,
     });
   }
@@ -54,7 +59,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(404).json({
       success: false,
-      message: `Product ID ${req.params.productId} is not found`,
+      message: `No product found with ID ${req.params.productId}`,
       error: err,
     });
   }
