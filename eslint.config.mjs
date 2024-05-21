@@ -4,7 +4,12 @@ import tseslint from "typescript-eslint";
 
 export default [
   {
-    languageOptions: { globals: globals.browser },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        process: "readonly",
+      },
+    },
     ignores: ["**/node_modules/", ".dist/"],
     rules: {
       "no-unused-vars": "error",
