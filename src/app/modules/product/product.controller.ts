@@ -35,7 +35,7 @@ const getAllProducts = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong!",
+      message: "Product cannot be found!",
       error: err,
     });
   }
@@ -52,9 +52,36 @@ const getSingleProduct = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
+    res.status(404).json({
       success: false,
       message: `Product ID ${req.params.productId} is not found`,
+      error: err,
+    });
+  }
+};
+
+// update a specific product
+const updateSingleProduct = async (req: Request, res: Response) => {
+  try {
+    const updateProduct = req.body.product;
+    const productId = req.params.productId;
+    let zodParseData = updateProduct;
+    if (updateProduct.inventory.quantity !== 0) {
+      zodParseData = productValidationSchema.parse(updateProduct);
+    }
+    const result = await ProductServices.updateSingleProductInDB(
+      productId,
+      zodParseData
+    );
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || `Something went wrong`,
       error: err,
     });
   }
@@ -64,4 +91,5 @@ export const ProductControllers = {
   createProduct,
   getAllProducts,
   getSingleProduct,
+  updateSingleProduct,
 };
