@@ -7,7 +7,7 @@ const createProduct = async (req: Request, res: Response) => {
   try {
     const product = req.body.product; // requested product
     const zodParseData = productValidationSchema.parse(product); // send requested product for zod validation
-
+    zodParseData.inventory.inStock = true;
     const result = await ProductServices.createProductIntoDB(zodParseData);
     res.status(200).json({
       success: true,
