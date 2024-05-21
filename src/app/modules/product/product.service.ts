@@ -28,8 +28,9 @@ const updateSingleProductInDB = async (
   productId: string,
   updateProduct: TProduct
 ) => {
+  let matchCount;
   try {
-    await Product.updateOne(
+    const result = await Product.updateOne(
       { _id: productId },
       {
         name: updateProduct.name,
@@ -41,15 +42,31 @@ const updateSingleProductInDB = async (
         inventory: updateProduct.inventory,
       }
     );
+    matchCount = result.matchedCount;
+    console.log(result.modifiedCount);
+    if (result.modifiedCount === 1) return updateProduct;
+    else throw new Error(`Nothing to update`);
   } catch (err) {
-    throw new Error(`Product Id ${productId} could not found`);
+    if (matchCount === 1) throw new Error(`Nothing to update`);
+    else throw new Error(`Product Id ${productId} not found`);
   }
-  const updatedResult = await Product.findOne({ _id: productId });
-  return updatedResult;
+};
+
+// Delete a specific product in DB
+const deleteSingleProductFromDB = async (productId: string) => {
+  try {
+    const result = await Product.deleteOne({ _id: productId });
+    if (result.deletedCount === 0)
+      throw new Error(`Product Id ${productId} not found`);
+    else return null;
+  } catch (err) {
+    throw new Error(`Product Id ${productId} not found`);
+  }
 };
 export const ProductServices = {
   createProductIntoDB,
   getAllProductsFromDB,
   getSingleProductFromDB,
   updateSingleProductInDB,
+  deleteSingleProductFromDB,
 };
