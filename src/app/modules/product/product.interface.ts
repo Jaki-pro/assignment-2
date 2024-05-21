@@ -3,13 +3,13 @@ export type TVariant = {
   value: string;
 };
 export type TInventory = {
-  quantity: Number;
+  quantity: number;
   inStock: boolean;
 };
 export type TProduct = {
   name: string;
   description: string;
-  price: Number;
+  price: number;
   category: string;
   tags: Array<string>;
   variants: Array<TVariant>;
