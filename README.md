@@ -20,4 +20,4 @@ To clone the repository, follow these steps:
 3. Run the following command:
 
 ```sh
-git clone https://github.com/your-username/your-repository-name.git
+[git clone https://github.com/your-username/your-repository-name.git](https://github.com/Jaki-pro/assignment-2.git)
