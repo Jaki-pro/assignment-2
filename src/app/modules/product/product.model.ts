@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose";
 import { TInventory, TProduct, TVariant } from "./product.interface";
-import { boolean } from "zod";
 
 const variantSchema = new Schema<TVariant>({
   type: { type: String, required: true },

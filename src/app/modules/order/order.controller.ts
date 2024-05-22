@@ -14,13 +14,35 @@ const createOrder = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
+    let errorMessage;
+    if (err?.issues) errorMessage = err.issues[0].message;
     res.status(500).json({
       success: false,
-      message: err.message || "Something went wrong!",
-      error: err,
+      message: errorMessage || err.message,
+    });
+  }
+};
+
+// Retrieve all orders
+const getAllOrders = async (req: Request, res: Response) => {
+  let query: string = "";
+  if (req?.query?.email) query = req.query.email as string;
+  // console.log(query);
+  try {
+    const result = await OrderServices.getAllOrdersFromDB(query);
+    res.status(200).json({
+      success: true,
+      message: "Orders fetched successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(404).json({
+      success: false,
+      message: err.message,
     });
   }
 };
 export const OrderControllers = {
   createOrder,
+  getAllOrders,
 };
