@@ -14,12 +14,18 @@ const createOrder = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    let errorMessage;
-    if (err?.issues) errorMessage = err.issues[0].message;
-    res.status(500).json({
-      success: false,
-      message: errorMessage || err.message,
-    });
+    if (err?.issues) {
+      res.status(500).json({
+        success: false,
+        message: err.issues[0].message,
+        error: err,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: err.message,
+      });
+    }
   }
 };
 

@@ -10,7 +10,7 @@ const inventoryValidationSchema = z.object({
     .number()
     .int({ message: "Quantity should be positive integer" })
     .gt(0, { message: "Quantity should be positive integer" }),
-  inStock: z.boolean(),
+  inStock: z.literal(true, { message: "Instock must be true" }),
 });
 
 export const productValidationSchema = z.object({

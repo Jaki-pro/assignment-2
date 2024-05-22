@@ -15,11 +15,18 @@ const createProduct = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || "Something went wrong!",
-      error: err,
-    });
+    if (err?.issues) {
+      res.status(500).json({
+        success: false,
+        message: err.issues[0].message,
+        error: err,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: err.message,
+      });
+    }
   }
 };
 
@@ -40,8 +47,7 @@ const getAllProducts = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(404).json({
       success: false,
-      message: err.message || "No product found!",
-      error: err,
+      message: err.message || "Something went wrong",
     });
   }
 };
@@ -59,8 +65,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(404).json({
       success: false,
-      message: `No product found with ID ${req.params.productId}`,
-      error: err,
+      message: `Product not found`,
     });
   }
 };
@@ -70,6 +75,10 @@ const updateSingleProduct = async (req: Request, res: Response) => {
   try {
     const updateProduct = req.body.product;
     const productId = req.params.productId;
+    // quantity of product is 0 then we dynamically update inStock value to false
+    if (updateProduct.inventory.quantity === 0)
+      updateProduct.inventory.inStock = false;
+
     let zodParseData = updateProduct;
     if (updateProduct.inventory.quantity !== 0) {
       zodParseData = productValidationSchema.parse(updateProduct);
@@ -84,15 +93,22 @@ const updateSingleProduct = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || `Something went wrong`,
-      error: err,
-    });
+    if (err?.issues) {
+      res.status(500).json({
+        success: false,
+        message: err.issues[0].message,
+        error: err,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: err.message,
+      });
+    }
   }
 };
 
-// update a specific product
+// Delete a specific product
 const deleteSingleProduct = async (req: Request, res: Response) => {
   try {
     const productId = req.params.productId;
@@ -103,10 +119,9 @@ const deleteSingleProduct = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
+    res.status(404).json({
       success: false,
       message: err.message || `Something went wrong`,
-      error: err,
     });
   }
 };

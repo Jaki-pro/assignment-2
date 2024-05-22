@@ -21,17 +21,16 @@ const getAllProductsFromDB = async (query: string) => {
         { description: { $regex: `^${query}` } },
       ],
     });
-    if (result.length === 0)
-      throw new Error(`No product found with search term: ${query}`);
+    if (result.length === 0) throw new Error(`Product not found`);
     return result;
   } catch (err) {
-    throw new Error(`No product found with search term: ${query}`);
+    throw new Error(`Product not found`);
   }
 };
 
 // get a specific product from DB
 const getSingleProductFromDB = async (productId: string) => {
-  const result = await Product.find({ _id: productId });
+  const result = await Product.findOne({ _id: productId });
   return result;
 };
 
@@ -40,9 +39,9 @@ const updateSingleProductInDB = async (
   productId: string,
   updateProduct: TProduct
 ) => {
-  let matchCount;
   try {
-    const result = await Product.updateOne(
+    await Product.updateOne(
+      // Update full document according to update Product
       { _id: productId },
       {
         name: updateProduct.name,
@@ -54,12 +53,10 @@ const updateSingleProductInDB = async (
         inventory: updateProduct.inventory,
       }
     );
-    matchCount = result.matchedCount;
-    if (result.modifiedCount === 1) return updateProduct;
-    else throw new Error(`Nothing to update`);
+    return updateProduct;
   } catch (err) {
-    if (matchCount === 1) throw new Error(`Nothing to update`);
-    else throw new Error(`Product Id ${productId} not found`);
+    // If productId doesn't match then throw an error product not found
+    throw new Error(`Product not found`);
   }
 };
 
@@ -67,11 +64,10 @@ const updateSingleProductInDB = async (
 const deleteSingleProductFromDB = async (productId: string) => {
   try {
     const result = await Product.deleteOne({ _id: productId });
-    if (result.deletedCount === 0)
-      throw new Error(`Product Id ${productId} not found`);
+    if (result.deletedCount === 0) throw new Error(`Product not found`);
     else return null;
   } catch (err) {
-    throw new Error(`Product Id ${productId} not found`);
+    throw new Error(`Product not found`);
   }
 };
 export const ProductServices = {
