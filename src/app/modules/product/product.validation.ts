@@ -14,30 +14,15 @@ const inventoryValidationSchema = z.object({
 });
 
 export const productValidationSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, { message: "name is required" })
-    .refine((value) => /^[A-Z]/.test(value), {
-      message: "Name value must start with a capital letter",
-    }),
-  description: z
-    .string()
-    .trim()
-    .min(10, {
-      message: "Description value must be more than or equal 10 characters",
-    })
-    .refine((value) => /^[A-Z]/.test(value), {
-      message: "Description value must start with a capital letter",
-    }),
+  name: z.string().trim().min(1, { message: "name is required" }),
+  // .refine((value) => /^[A-Z]/.test(value), { to ensure first character is uppercase
+  //   message: "Name value must start with a capital letter",
+  // }),
+  description: z.string().trim().min(10, {
+    message: "Description value must be more than or equal 10 characters",
+  }),
   price: z.number().gt(0, { message: "Price should be positive value" }),
-  category: z
-    .string()
-    .trim()
-    .min(1, { message: "Category is required" })
-    .refine((value) => /^[A-Z]/.test(value), {
-      message: "Category value must start with a capital letter",
-    }),
+  category: z.string().trim().min(1, { message: "Category is required" }),
   tags: z
     .array(
       z.string().trim().min(1, { message: "Tags element cannot be empty" })

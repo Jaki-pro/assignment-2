@@ -13,14 +13,16 @@ const createOrder = async (req: Request, res: Response) => {
       message: "Order created successfully!",
       data: result,
     });
+    // eslint-disable-next-line
   } catch (err: any) {
     if (err?.issues) {
+      // Zod Error happened
       res.status(500).json({
         success: false,
         message: err.issues[0].message,
-        error: err,
       });
     } else {
+      // handle throw error
       res.status(404).json({
         success: false,
         message: err.message,
@@ -41,6 +43,7 @@ const getAllOrders = async (req: Request, res: Response) => {
       message: "Orders fetched successfully!",
       data: result,
     });
+    // eslint-disable-next-line
   } catch (err: any) {
     res.status(404).json({
       success: false,

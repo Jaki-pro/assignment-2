@@ -8,7 +8,7 @@ const createOrderIntoDB = async (orderData: TOrder) => {
   try {
     product = await Product.findOne({ _id: orderData.productId });
 
-    // Check if order quantity is smaller or equal to product qunatity
+    // Check if order quantity is smaller or equal to product qunatity. If true then,
     if (
       product != undefined &&
       product.inventory.quantity >= orderData.quantity
@@ -32,9 +32,9 @@ const createOrderIntoDB = async (orderData: TOrder) => {
       product != null &&
       product.inventory.quantity < orderData.quantity
     ) {
-      // If order quantity is greater than that of product then show this
+      // If order quantity is greater than that of product then show Insufficient quantity available in inventory
       throw new Error("Insufficient quantity available in inventory");
-    } else throw new Error("Product not found"); // If productId is not found in product list then show product not found
+    } else throw new Error("Product not found");
   }
 };
 
