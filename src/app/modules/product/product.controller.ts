@@ -5,7 +5,7 @@ import { productValidationSchema } from "./product.validation";
 // create a new product
 const createProduct = async (req: Request, res: Response) => {
   try {
-    const product = req.body.product; // requested product
+    const product = req.body; // requested product
     const zodParseData = productValidationSchema.parse(product); // send requested product for zod validation
     zodParseData.inventory.inStock = true;
     const result = await ProductServices.createProductIntoDB(zodParseData);
@@ -75,7 +75,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
 // update a specific product
 const updateSingleProduct = async (req: Request, res: Response) => {
   try {
-    const updateProduct = req.body.product;
+    const updateProduct = req.body;
     const productId = req.params.productId;
     // If quantity of Update product is 0 then we dynamically update inStock value to false
     if (updateProduct.inventory.quantity === 0)

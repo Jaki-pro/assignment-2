@@ -19,9 +19,9 @@ const getAllProductsFromDB = async (query: string) => {
     // Otherwise only those documents will be found whose name or category or description matches the query from their starting position.
     const result = await Product.find({
       $or: [
-        { name: { $regex: `^${query}` } },
-        { category: { $regex: `^${query}` } },
-        { description: { $regex: `^${query}` } },
+        { name: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } },
       ],
     });
     if (result.length === 0) throw new Error(`Product not found`); // If result is empty array that means no product was found
