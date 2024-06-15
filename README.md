@@ -17,7 +17,7 @@ To clone the repository, follow these steps:
 
 1. Open your terminal or command prompt.
 2. Navigate to the directory where you want to clone the repository.
-3. Run the following command:
+3. Run the following command perfectly:
 
 ```sh
 git clone https://github.com/Jaki-pro/assignment-2.git
